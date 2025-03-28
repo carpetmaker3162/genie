@@ -1,3 +1,3 @@
-## Genie
+# Genie
 
 aphsCTF
