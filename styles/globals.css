@@ -14,6 +14,15 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.quote {
+  font-style: italic;
+  color: blue;
 }
 
 body {
@@ -27,7 +36,22 @@ body {
 * {
   box-sizing: border-box;
   padding: 0;
-  margin: 0;
+  margin: 5px;
+}
+
+p,
+b,
+button {
+  font-size: 18px;
+}
+
+button {
+  padding: 4px;
+}
+
+input {
+  padding: 8px;
+  font-size: 18px;
 }
 
 a {
@@ -38,5 +62,22 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+.animate {
+  animation: pulse 0.2s ease-in-out;
+  animation-iteration-count: 4;
+}
+
+@keyframes pulse {
+  0% {
+    color: red;
+  }
+  50% {
+    color: yellow;
+  }
+  100% {
+    color: red;
   }
 }
