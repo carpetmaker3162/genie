@@ -1,17 +1,23 @@
 // A custom implementation of Math.random() which supports having distinct rng instances
+// 
+// Random.random() behaves mostly identically to Math.random() does on Chrome and Edge, 
+// except for initial seed generation
 
 
 const MASK = 0xFFFFFFFFFFFFFFFFn;
+
 
 function reverse17(val: bigint): bigint {
   return val ^ (val >> 17n) ^ (val >> 34n) ^ (val >> 51n);
 }
 
+
 function reverse23(val: bigint): bigint {
   return (val ^ (val << 23n) ^ (val << 46n)) & MASK;
 }
 
-function xs128pBackward(state0: bigint, state1: bigint) {
+
+function xs128pInverse(state0: bigint, state1: bigint) {
   const prevState1 = state0;
   let prevState0 = state1 ^ (state0 >> 26n);
   prevState0 = prevState0 ^ state0;
@@ -21,7 +27,7 @@ function xs128pBackward(state0: bigint, state1: bigint) {
   return { prevState0, prevState1, generated };
 }
 
-// TODO: change impl for safari and firefox
+
 function toDouble(out: bigint): number {
   const doubleBits = (out >> 12n) | 0x3FF0000000000000n;
   const buffer = new ArrayBuffer(8);
@@ -30,11 +36,12 @@ function toDouble(out: bigint): number {
   return view.getFloat64(0, true) - 1;
 }
 
+
 function nextState(state0: bigint, state1: bigint) {
-  // TODO: handle different browsers
-  const { prevState0, prevState1, generated } = xs128pBackward(state0, state1);
+  const { prevState0, prevState1, generated } = xs128pInverse(state0, state1);
   return { prevState0, prevState1, generated };
 }
+
 
 export class Random {
   private state0: bigint;

@@ -1,17 +1,7 @@
 import { Redis } from 'ioredis';
 
-export const redis = new Redis({
-  host: 'localhost',
-  port: 6379
-});
 
-/* interface SessionData {
-  random: Random;
-  round: number;
-}
-
-export const clientDataStore: Record<string, SessionData> = {}; */
-
+export const redis = new Redis();
 
 
 export async function incrRound(UUID: string) {
@@ -20,6 +10,7 @@ export async function incrRound(UUID: string) {
   await redis.hset(`session-${UUID}`, 'round', Number(currRound) + 1)
   return Number(currRound) + 1;
 }
+
 
 export async function resetRound(UUID: string) {
   await redis.hset(`session-${UUID}`, 'round', 1)

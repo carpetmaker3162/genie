@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
 import { baseUrl } from './lib/config';
 
 
@@ -11,6 +11,7 @@ export default function Page() {
   const [gameComplete, setGameComplete] = useState<boolean>(false);
   const [animate, setAnimate] = useState(false);
   
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -48,6 +49,7 @@ export default function Page() {
     setGuess('');
   };
 
+  
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Genie</h1>

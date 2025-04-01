@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
   if (!rngState) {
     return NextResponse.json({ error: `No RNG state found for ${clientUUID}` }, { status: 500 });
   }
+  
   let random = parseRandom(rngState);
   const num = random.random();
   await redis.hset(`session-${clientUUID}`, 'randstate', serializeRandom(random));
