@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { redis } from "../../lib/store";
 import { parseRandom, serializeRandom } from "../../lib/utils";
+import Random from "../../lib/random";
 
 
 export async function GET(request: NextRequest) {
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: `No RNG state found for ${clientUUID}` }, { status: 500 });
   }
   
-  let random = parseRandom(rngState);
+  let random: Random = parseRandom(rngState);
   const num = random.random();
   await redis.hset(`session-${clientUUID}`, 'randstate', serializeRandom(random));
 
