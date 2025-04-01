@@ -16,6 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
     const cleanupSession = () => {
       fetch(`${baseUrl}/api/session`, { method: 'DELETE', keepalive: true });
+      // delete clientUUID cookie
+      document.cookie = "clientUUID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     };
     window.addEventListener('beforeunload', cleanupSession);
     return () => window.removeEventListener('beforeunload', cleanupSession);

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
   } else {
     resetRound(clientUUID);
-    return NextResponse.json({ message: `Incorrect guess.`, round: 1, correct: false });
+    return NextResponse.json({ message: `Incorrect guess. ${num}`, round: 1, correct: false });
   }
 }
   

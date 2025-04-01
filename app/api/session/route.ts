@@ -6,18 +6,19 @@ import { serializeRandom } from '../../lib/utils';
 
 // ends the session
 export async function DELETE(request: NextRequest) {
-  console.log('deleted bozino')
   const clientUUID = request.cookies.get('clientUUID')?.value;
-  if (clientUUID && await redis.exists('session-${clientUUID}')) {
-    await redis.del('session-${clientUUID}');
+  if (clientUUID && await redis.exists(`session-${clientUUID}`)) {
+    await redis.hdel(`session-${clientUUID}`, 'round', 'randstate');
   }
   const response = NextResponse.json({ success: true });
+  
+  response.cookies.delete('clientUUID');
+
   return response;
 }
 
 
 // begins the session
-// TODO: check if not exists (in layout.tsx? or return status)
 export async function POST(request: NextRequest) {
   const clientUUID = request.cookies.get('clientUUID');
 
