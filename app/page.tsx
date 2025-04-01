@@ -55,7 +55,7 @@ export default function Page() {
       <h1>Genie</h1>
       {!gameComplete ? (
         <>
-          <p className="quote" style={{ marginBottom: '2rem' }}>"I'm thinking of a number between 1 and 1000."</p>
+          <p className="quote" style={{ marginBottom: '2rem' }}>"I'm thinking of a number between 1 and 100."</p>
           <b className={ animate ? "animate" : "" }>Round {round} of 5</b>
           <form onSubmit={handleSubmit}>
             <input
@@ -63,7 +63,7 @@ export default function Page() {
               value={guess}
               onChange={(e) => setGuess(e.target.value)}
               min="1"
-              max="1000"
+              max="100"
               required
             />
             <button type="submit">Submit Guess</button>

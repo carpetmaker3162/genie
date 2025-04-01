@@ -28,7 +28,7 @@ async function getRandom(request: NextRequest) {
   }
 
   const { num } = await randomResponse.json();
-  return Math.floor(num * 1000) + 1;
+  return Math.floor(num * 100) + 1;
 }
 
 
