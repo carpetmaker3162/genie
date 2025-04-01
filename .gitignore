@@ -1,3 +1,6 @@
+compress.sh
+*.tar.gz
+
 # Redis
 dump.rdb
 
