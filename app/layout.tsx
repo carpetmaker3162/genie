@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       });
 
     const cleanupSession = () => {
-      fetch(`${baseUrl}/api/session`, { method: 'DELETE' });
+      fetch(`${baseUrl}/api/session`, { method: 'DELETE', keepalive: true });
     };
     window.addEventListener('beforeunload', cleanupSession);
     return () => window.removeEventListener('beforeunload', cleanupSession);
