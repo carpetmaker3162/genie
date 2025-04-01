@@ -1,5 +1,8 @@
+// session-related APIs
+
+
 import { NextRequest, NextResponse } from 'next/server';
-import { Random } from '../../lib/random';
+import Random from '../../lib/random';
 import { redis } from '../../lib/store';
 import { serializeRandom } from '../../lib/utils';
 

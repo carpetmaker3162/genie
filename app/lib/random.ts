@@ -1,7 +1,4 @@
-// A custom implementation of Math.random() which supports having distinct rng instances
-// 
-// Random.random() behaves mostly identically to Math.random() does on Chrome and Edge, 
-// except for initial seed generation
+// A custom implementation of Math.random() which supports having distinct rng instances.
 
 
 const MASK = 0xFFFFFFFFFFFFFFFFn;
@@ -43,7 +40,7 @@ function nextState(state0: bigint, state1: bigint) {
 }
 
 
-export class Random {
+export default class Random {
   private state0: bigint;
   private state1: bigint;
 
@@ -60,6 +57,7 @@ export class Random {
   }
 
   
+  // Random.random() is equivalent to Math.random()
   public random(): number {
     const { prevState0, prevState1, generated } = nextState(this.state0, this.state1);
     this.state0 = prevState0;

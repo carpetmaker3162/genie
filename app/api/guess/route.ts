@@ -1,7 +1,5 @@
-
 import { NextRequest, NextResponse } from "next/server";
-import { resetRound, incrRound } from "../../lib/store";
-import { redis } from '../../lib/store';
+import { redis, resetRound, incrRound } from "../../lib/store";
 import { baseUrl } from "../../lib/config";
 
 
