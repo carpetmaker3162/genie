@@ -1,65 +1,48 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
+import { baseUrl } from './lib/config';
 
-// Generate a number between 1 to 1000 inclusive.
-function generateRandom(): number {
-  const num = Math.floor(Math.random() * 1000) + 1;
-  console.log('Last number was ' + num);
-  return num;
-}
-
-// Choose a random string from a list of strings.
-function chooseRandom(options: string[]): string {
-  if (options.length === 0) throw new Error("options should not be empty");
-  return options[Math.floor(Math.random() * options.length)];
-}
 
 export default function Page() {
-  const flag = process.env.NEXT_PUBLIC_FLAG;
-  const [target, setTarget] = useState<number>(0);
   const [guess, setGuess] = useState<string>('');
   const [round, setRound] = useState<number>(1);
   const [message, setMessage] = useState<string>('');
   const [gameComplete, setGameComplete] = useState<boolean>(false);
   const [animate, setAnimate] = useState(false);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const newTarget = generateRandom();
-    setTarget(newTarget);
     
     const numGuess = parseInt(guess, 10);
 
-    // Correct guess
-    if (numGuess === newTarget) {
-      // Trigger then stop animation
+    const response = await fetch(`${baseUrl}/api/guess`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ guess: numGuess })
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || "Request failed");
+    }
+    
+    // correct guess
+    if (result.correct) {
       setAnimate(true);
       setTimeout(() => setAnimate(false), 800);
 
-      if (round === 5) {  // End game
-        setMessage(flag ?? '<FLAG>');
+      if (result.gameOver) {  // end game
+        setMessage(result.flag);
         setGameComplete(true);
-        
       } else {  // round + 1
-        const message = chooseRandom([
-          'Correct! You\'re not so bad at this after all.', 
-          'Correct! Lucky guess...',
-          'Correct! You won\'t get the next one...',
-          'Correct! Next time you won\'t be so lucky.'])
-        setMessage(message);
-        setRound(round + 1);
+        setMessage(result.message);
+        setRound(result.round);
       }
 
-    } else {  // Wrong guess
-      const message = chooseRandom([
-        'Wrong. You aren\'t great at guessing are you?', 
-        'Wrong. Ready to give up yet?',
-        'Wrong. Try again.',
-        'Wrong. Did you think I would go easy?'])
-      setMessage(message);
-      setRound(1);
+    } else {  // wrong guess
+      setMessage(result.message);
+      setRound(result.round);
     }
 
     setGuess('');

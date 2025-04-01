@@ -1,54 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { clientDataStore } from '../../lib/store';
 import { Random } from '../../lib/random';
-// import { Redis } from 'ioredis';
-
-
-// const redis = new Redis();
+import { redis } from '../../lib/store';
+import { serializeRandom } from '../../lib/utils';
 
 
 // ends the session
 export async function DELETE(request: NextRequest) {
-  console.log('deleted bozinado');
+  console.log('deleted bozino')
   const clientUUID = request.cookies.get('clientUUID')?.value;
-  if (clientUUID && clientDataStore[clientUUID]) {
-    delete clientDataStore[clientUUID];
+  if (clientUUID && await redis.exists('session-${clientUUID}')) {
+    await redis.del('session-${clientUUID}');
   }
-  // Optionally clear the cookie by returning a Set-Cookie header with expired date
   const response = NextResponse.json({ success: true });
-  //response.cookies.set('clientUUID', '', { expires: new Date(0) });
   return response;
 }
 
 
 // begins the session
+// TODO: check if not exists (in layout.tsx? or return status)
 export async function POST(request: NextRequest) {
-  const clientUUID = crypto.randomUUID();
+  const clientUUID = request.cookies.get('clientUUID');
 
-  clientDataStore[clientUUID] = { 
-    random: new Random(),
-    round: 1
-  };
-  console.log(clientDataStore);
+  if (!clientUUID) {
+    const newClientUUID = crypto.randomUUID();
 
-  // Create response and set HTTP-only cookie with the generated UUID
-  const response = NextResponse.json({ success: true, clientUUID });
-  response.cookies.set('clientUUID', clientUUID, {
-    httpOnly: true,
-    sameSite: 'lax',
-    // Set secure flag in production environments
-    secure: process.env.NODE_ENV === 'production',
-  });
-  return response;
+    await redis.hset(`session-${newClientUUID}`, 'round', 1, 'randstate', serializeRandom(new Random()))
+
+    const response = NextResponse.json({ success: true, clientUUID: newClientUUID });
+    response.cookies.set('clientUUID', newClientUUID, {
+      httpOnly: true,
+      sameSite: 'lax',
+      // secure: true,
+    });
+
+    return response;
+
+  } else {
+    return NextResponse.json({ status: 200 });
+  }
 }
 
 
 // retrieve client state from server
 export async function GET(request: NextRequest) {
   const clientUUID = request.cookies.get('clientUUID')?.value;
-  if (!clientUUID || !clientDataStore[clientUUID]) {
+  if (!clientUUID) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const { round } = clientDataStore[clientUUID];
+
+  const currRoundStr = await redis.hget(`session-${clientUUID}`, 'round');
+  if (!currRoundStr) {
+    return NextResponse.json({ error: 'No session found' }, { status: 401 });
+  }
+
+  const round = Number(currRoundStr);
   return NextResponse.json({ round });
 }
