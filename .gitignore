@@ -1,5 +1,6 @@
 compress.sh
 *.tar.gz
+writeup.md
 
 # Redis
 dump.rdb
