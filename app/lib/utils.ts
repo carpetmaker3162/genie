@@ -1,22 +1,6 @@
 import Random from './random';
 
 
-export function browser(): string {
-  const userAgent = navigator.userAgent;
-
-  if (userAgent.indexOf("Chrome") !== -1) {
-    if (userAgent.indexOf("Safari") !== -1) {
-      return "safari";
-    }
-    return "chrome";
-  } else if (userAgent.indexOf("Firefox") !== -1) {
-    return "firefox";
-  } else {
-    return "unknown";
-  }
-}
-
-
 function serializeBigInt(value: bigint): string {
   return value.toString() + 'n';
 }
