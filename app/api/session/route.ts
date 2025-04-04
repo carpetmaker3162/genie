@@ -9,25 +9,25 @@ import { serializeRandom } from '../../lib/utils';
 
 // begins the session
 export async function POST(request: NextRequest) {
-  const clientUUID = request.cookies.get('clientUUID');
+  let clientUUID: any = request.cookies.get('clientUUID');
   
   if (!clientUUID) {
-    const newClientUUID = crypto.randomUUID();
-    
-    await redis.hset(`session-${newClientUUID}`, 'round', 1, 'randstate', serializeRandom(new Random()))
-    
-    const response = NextResponse.json({ success: true, clientUUID: newClientUUID });
-    response.cookies.set('clientUUID', newClientUUID, {
-      httpOnly: true,
-      sameSite: 'lax',
-      // secure: true,
-    });
-    
-    return response;
-    
-  } else {
-    return NextResponse.json({ status: 200 });
+    clientUUID = crypto.randomUUID();
   }
+
+  if (!await redis.exists(`session-${clientUUID}`))
+  {
+    await redis.hset(`session-${clientUUID}`, 'round', 1, 'randstate', serializeRandom(new Random()))
+  }
+
+  const response = NextResponse.json({ success: true, clientUUID });
+  response.cookies.set('clientUUID', clientUUID, {
+    httpOnly: true,
+    sameSite: 'lax',
+    // secure: true,
+  });
+    
+  return response;
 }
 
 

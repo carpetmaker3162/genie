@@ -7,14 +7,16 @@ const correctMsgs = [
   'Correct! You\'re not so bad at this after all.', 
   'Correct! Lucky guess...',
   'Correct! You won\'t get the next one...',
-  'Correct! Next time you won\'t be so lucky.']
+  'Correct! Next time you won\'t be so lucky.'
+]
 
 
 const incorrectMsgs = [
   'Wrong. You aren\'t great at guessing are you?', 
   'Wrong. Ready to give up yet?',
   'Wrong. Try again.',
-  'Wrong. Did you think I would go easy?']
+  'Wrong. Did you think I would go easy?'
+]
 
 
 async function getRandom(request: NextRequest) {
