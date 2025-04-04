@@ -13,6 +13,8 @@ export async function POST(request: NextRequest) {
   
   if (!clientUUID) {
     clientUUID = crypto.randomUUID();
+  } else {
+    clientUUID = clientUUID.value;
   }
 
   if (!await redis.exists(`session-${clientUUID}`))
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
   response.cookies.set('clientUUID', clientUUID, {
     httpOnly: true,
     sameSite: 'lax',
-    // secure: true,
+    // secure: true, // if https
   });
     
   return response;
