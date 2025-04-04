@@ -25,6 +25,9 @@ export default function Page() {
     });
     const result = await response.json();
     if (!response.ok) {
+      if (response.status == 401) {
+        alert('Unauthorized, reload page');
+      }
       throw new Error(result.error || "Request failed");
     }
     
