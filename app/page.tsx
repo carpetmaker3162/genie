@@ -10,14 +10,14 @@ export default function Page() {
   const [message, setMessage] = useState<string>('');
   const [gameComplete, setGameComplete] = useState<boolean>(false);
   const [animate, setAnimate] = useState(false);
-  
+
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const numGuess = parseInt(guess, 10);
 
-    const response = await fetch(`${baseUrl}/api/guess`, {
+    const response = await fetch(`/api/guess`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -30,7 +30,7 @@ export default function Page() {
       }
       throw new Error(result.error || "Request failed");
     }
-    
+
     // correct guess
     if (result.correct) {
       setAnimate(true);
@@ -52,14 +52,14 @@ export default function Page() {
     setGuess('');
   };
 
-  
+
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
       <h1>Genie</h1>
       {!gameComplete ? (
         <>
           <p className="quote" style={{ marginBottom: '2rem' }}>"I'm thinking of a number between 1 and 100."</p>
-          <b className={ animate ? "animate" : "" }>Round {round} of 5</b>
+          <b className={animate ? "animate" : ""}>Round {round} of 5</b>
           <form onSubmit={handleSubmit}>
             <input
               type="number"

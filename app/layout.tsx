@@ -6,7 +6,7 @@ import { baseUrl } from './lib/config';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    fetch(`${baseUrl}/api/session`, { method: 'POST' })
+    fetch(`/api/session`, { method: 'POST' })
       .then((res) => res.json())
       .then((data) => {
         console.log('Session created:', data);
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 
     const cleanupSession = () => {
-      fetch(`${baseUrl}/api/session`, { method: 'DELETE', keepalive: true });
+      fetch(`/api/session`, { method: 'DELETE', keepalive: true });
       // delete clientUUID cookie
       document.cookie = "clientUUID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     };
@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return () => window.removeEventListener('beforeunload', cleanupSession);
   }, []);
 
-  
+
   return (
     <html>
       <body>{children}</body>
